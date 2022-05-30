@@ -50,13 +50,38 @@ class LoginForm extends Component {
         );
     }
 
+    onSubmitSuccess = () => {
+        const {history} = this.props;
+        // history.push('/'); it will maintain paths
+        history.replace('/'); // it replace previous path
+    }
+
+    submitForm = async event => {
+        event.preventDefault()
+        const {username, password} = this.state;
+        const userDetails = {username, password};
+        const url = "https://apis.ccbp.in/login";
+        const options = {
+            method: "POST",
+            body: JSON.stringify(userDetails),
+        }
+
+        const response = await fetch(url, options);
+        const data = response.json();
+        console.log("login response", data);
+
+        if (response.ok === true) {
+            this.onSubmitSuccess()
+        }
+    }
+
     render() {
         return(
             <div>
                 <form>
-                    <div>{<this.renderUsernameField/>}</div>
-                    <div>{<this.renderPasswordField/>}</div>
-                    <button type="submit"> Login </button>
+                    <div>{this.renderUsernameField}</div>
+                    <div>{this.renderPasswordField}</div>
+                    <button type="submit" onSubmit={this.submitForm}> Login </button>
                 </form>
             </div>
         )
